@@ -507,12 +507,21 @@ exports.createSharingDiv = function(options) {
     });
   }
 
-//  SMS-to-phone feature
+  var sharingShapeways = sharingDiv.querySelector('#sharing-shapeways');
+  if (sharingShapeways) {
+    dom.addClickTouchEvent(sharingShapeways, function() {
+      $('#send-to-phone').hide();
+      $('#shapeways-message').show();
+    });
+  }
+
+  //  SMS-to-phone feature
   var sharingPhone = sharingDiv.querySelector('#sharing-phone');
   if (sharingPhone && options.sendToPhone) {
     dom.addClickTouchEvent(sharingPhone, function() {
       var sendToPhone = sharingDiv.querySelector('#send-to-phone');
       if ($(sendToPhone).is(':hidden')) {
+        $('#shapeways-message').hide();
         sendToPhone.setAttribute('style', 'display:inline-block');
         var phone = $(sharingDiv.querySelector("#phone"));
         var submitted = false;
@@ -1066,6 +1075,7 @@ function hasUnusedParam() {
       // Unused param if there's no parameters_get descendant with the same name
       return !hasMatchingDescendant(userBlock, function(block) {
         return (block.type === 'parameters_get' ||
+            block.type === 'functional_parameters_get' ||
             block.type === 'variables_get') &&
             block.getTitleValue('VAR') === paramName;
       });

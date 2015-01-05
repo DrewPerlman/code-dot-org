@@ -200,4 +200,21 @@ class ScriptTest < ActiveSupport::TestCase
       assert Script.find_by_name(s).hidden?, "#{s} is not hidden when it should be"
     end
   end
+
+  test 'get_script_level_by_stage_and_position raises RecordNotFound instead of NoMethodError when not found' do
+    artist = Script.find_by_name('artist')
+    assert_raises(ActiveRecord::RecordNotFound) do
+      # no stage 11 in artist
+      artist.get_script_level_by_stage_and_position(11, 1)
+    end
+  end
+
+  test 'gets script cache from redis (or fake redis)' do
+    Script.script_cache_to_redis # in test this is just a hash
+
+    Script.connection.disconnect!     # we don't need no stinkin db
+
+    assert_equal 'Flappy', Script.get_from_cache('flappy').script_levels[3].level.game.name
+    assert_equal 'anna', Script.get_from_cache('frozen').script_levels[5].level.skin
+  end
 end

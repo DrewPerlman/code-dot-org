@@ -38,24 +38,24 @@ One lucky school in ***every*** U.S. state (+ Washington D.C.) won $10,000 worth
 ### Tune into the live chats, or watch the video archives:
 
 **TUESDAY**, December 9 <br />
-10:00 AM PST - [Lyndsey Scott](http://www.youtube.com/watch?v=oyNQciBMXzQ) <br />
-12:00 PM PST - [Jack Dorsey](http://www.youtube.com/watch?v=o4mPg5pmyj4) <br />
-3:00 PM PST - [Ashton Kutcher](http://www.youtube.com/watch?v=0cVjD0wiOmo) <br />
+10:00 AM PST - [Lyndsey Scott](http://www.youtube.com/watch?v=6s5oxGmbXy4) <br />
+12:00 PM PST - [Jack Dorsey](http://www.youtube.com/watch?v=PBGJfpbSWjY) <br />
+3:00 PM PST - [Ashton Kutcher](http://www.youtube.com/watch?v=d1LuhJPJP9s) <br />
 
 **WEDNESDAY**, December 10 <br />
-7:30 AM PST - [Cory Booker](http://www.youtube.com/watch?v=jrC_lzucwBI) <br />
-10:00 AM PST - [JR Hildebrand](http://www.youtube.com/watch?v=CKaaIFx90qA) <br />
-11:00 AM PST - [Clara Shih](http://www.youtube.com/watch?v=Sww3-rJ27BU) <br />
-12:00 PM PST - [Jessica Alba](http://www.youtube.com/watch?v=IFL3WN0F_Gg) <br />
+7:30 AM PST - [Cory Booker](http://www.youtube.com/watch?v=wD0Heuvv87I) <br />
+10:00 AM PST - [JR Hildebrand](http://www.youtube.com/watch?v=DfhAdnosy58) <br />
+11:00 AM PST - [Clara Shih](http://www.youtube.com/watch?v=2p7uhb1qulA) <br />
+12:00 PM PST - [Jessica Alba](http://youtu.be/m4oEbAQbWCE) <br />
 
 **THURSDAY**, December 11 <br />
-5:30 AM PST - [Karlie Kloss](http://www.youtube.com/watch?v=fvydHOG-ILY) <br />
-9 AM PST - [David Karp](http://www.youtube.com/watch?v=dOWWtqiZzJo) <br />
-10 AM PST - [Jess Lee](http://www.youtube.com/watch?v=W04XKIk73QQ) <br />
-11 AM PST - [Usher](http://www.youtube.com/watch?v=YMxYLPxz7Hg) <br />
+5:30 AM PST - [Karlie Kloss](http://www.youtube.com/watch?v=6SzsRGTmjy0) <br />
+9 AM PST - [David Karp](http://www.youtube.com/watch?v=1tVei0jOyVQ) <br />
+10 AM PST - [Jess Lee](http://www.youtube.com/watch?v=wXKPrtfaoi8) <br />
+11 AM PST - [Usher](http://www.youtube.com/watch?v=xvQSSaCD4yw) <br />
 
 **FRIDAY**, December 12 <br />
-10:00 AM PST - [Hadi Partovi](http://www.youtube.com/watch?v=eJ40qOodafo)
+10:00 AM PST - [Hadi Partovi](http://www.youtube.com/watch?v=PDnjt6iIBzo)
 
 \*Recordings of Bill Gates and Sheryl Sandberg chats will be available on [our YouTube channel](https://www.youtube.com/user/CodeOrg/)
 
@@ -78,6 +78,26 @@ Every educator who hosts an Hour of Code for students will receive 10 GB of Drop
 
 [Actua](http://actua.ca/) is Canada’s leader in Science, Technology, Engineering, and Math Outreach. Each year Actua reaches over 225,000 youth in over 500 communities through its barrier-breaking programming.
 
+**Congratulations to the 2014 winners!**
+
+|School|City|Actua Network Member|
+|---|---|---|
+|Spencer Middle School|Victoria|Science Venture|
+|Malcolm Tweddle School|Edmonton|DiscoverE|
+|Britannia Elementary|Vancouver|GEERing Up|
+|Captain John Palliser|Calgary|Minds in Motion|
+|St. Josaphat School|Regina|EYES|
+|Bishop Roborecki School|Saskatoon|SCI-FI|
+|Dalhousie Elementary School|Winnipeg|WISE Kid-Netic Energy|
+|Hillfield Strathallan College|Hamilton|Venture Engineering and Science|
+|Byron Northview Public School|London|Discovery Western|
+|Stanley Public School|Toronto|Science Explorations|
+|Ottawa Catholic School Board|Ottawa|Virtual Ventures|
+|École Arc-en-Ciel|Montreal|Folie Technique|
+|Saint Vincent Elementary School|Laval|Musee Armand Frappier|
+|Garden Creek School|Fredericton|Worlds UNBound|
+|Armbrae Academy|Halifax|SuperNOVA|
+
 <h2 id="kids_code">Kids Code Jeunesse will help support you in the classroom!</h2>
 
 Are you a teacher who wants to introduce computer programming to your students and would like support in the classroom? Any teacher that would like a trained Computer Programming volunteer to assist in the classroom can contact [Kids Code Jeunesse](http://www.kidscodejeunesse.org) and we’ll work on getting you supported! [Kids Code Jeunesse](http://www.kidscodejeunesse.org) is a Canadian not for profit aimed at providing every child with the opportunity to learn to code. And every teacher the opportunity to learn how to teach computer programming in the classroom.
@@ -98,6 +118,10 @@ Check out <a href="<%= hoc_uri('/prizes-terms') %>">Terms and Conditions</a> or 
 <% if @country == 'us' %>
 
 <h1 id="faq">Frequently Asked Questions</h1>
+
+## If I received Dropbox space as a gift last year, can I get it again?
+
+If you have redeemed a 10 GB Dropbox code in the past, you can only apply your new code to a *different* account or choose Skype credit as your gift. Dropbox space is valid for one year after it is applied to your account. 
 
 
 ## Does your whole school have to enter to win the $10,000 in hardware?

@@ -65,6 +65,24 @@
         }
       }
     })(level);
+    function reverseDirection(token) {
+      if (/left/i.test(token)) {
+        token = 'right';
+      } else if (/right/i.test(token)) {
+        token = 'left';
+      }
+      return token;
+    }
+    function reverseCallout(position) {
+      position = position.split(/\s+/);
+      var a = position[0];
+      var b = position[1];
+      return reverseDirection(a) + reverseDirection(b);
+    }
+    // Hide callouts when the function editor is closed (otherwise they jump to the top left corner)
+    $(window).on('function_editor_closed', function() {
+      $('.cdo-qtips').qtip('hide');
+    });
     // See assets/javascripts/sendReport for definition of lastServerResponse
     var appOptions = {
       levelId: '#{@level.level_num}',
@@ -82,7 +100,9 @@
         $.fn.qtip.zindex = 500;
         this.callouts.every(function(callout) {
           var selector = callout.element_id; // jquery selector.
-          if ($(selector).length <= 0) { console.log("Couldn't find callout target."); return true;}
+          if ($(selector).length === 0 && !callout.on) {
+            return true;
+          }
 
           var defaultConfig = {
             content: {
@@ -112,8 +132,25 @@
           var config = $.extend(true, {}, defaultConfig, customConfig);
           config.style.classes = config.style.classes.concat(" cdo-qtips");
 
-          var calloutDomElement = $(selector).qtip(config);
-          calloutDomElement.qtip('show');
+          // Reverse callouts in RTL mode
+          if (Blockly.RTL) {
+            config.position.my = reverseCallout(config.position.my);
+            config.position.at = reverseCallout(config.position.at);
+            if (config.position.adjust) {
+              config.position.adjust.x *= -1;
+            }
+          }
+
+          if (callout.on) {
+            window.addEventListener(callout.on, function() {
+              if (!callout.seen && $(selector).length > 0) {
+                callout.seen = true;
+                $(selector).qtip(config).qtip('show');
+              }
+            });
+          } else {
+            $(selector).qtip(config).qtip('show');
+          }
 
           return true;
         });

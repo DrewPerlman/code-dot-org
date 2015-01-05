@@ -15,11 +15,11 @@
       "downButton",
       "upButton"
     ],
-    "instructions": "We've added one last function for you to use. Program your game to call the \"level_up\" function if \"player_points\" > 10.",
+    "instructions": "We've added one last function for you to use. Program your game to call the \"level_up\" function if \"player_points\" > 10. Play the game, and make it past level 4 to move to the next puzzle. ",
     "is_k1": "false",
     "skip_instructions_popup": "false",
     "disable_param_editing": "true",
-    "disable_variable_editing": "false",
+    "disable_variable_editing": "true",
     "use_modal_function_editor": "true",
     "use_contract_editor": "false",
     "free_play": "false",
@@ -27,7 +27,10 @@
     "projectile_collisions": "false",
     "allow_sprites_outside_playspace": "false",
     "sprites_hidden_to_start": "false",
-    "coordinate_grid_background": "false"
+    "coordinate_grid_background": "false",
+    "embed": "false",
+    "disable_sharing": "false",
+    "maze_data": null
   }
 }]]></config>
   <blocks>
@@ -55,7 +58,18 @@
             </block>
           </next>
         </block>
-        <block type="studio_whenSpriteCollided">
+        <block type="studio_repeatForever" x="20" y="120">
+          <statement name="DO">
+            <block type="controls_if" inline="false">
+              <value name="IF0">
+                <block type="logic_compare" inline="true">
+                  <title name="OP">GT</title>
+                </block>
+              </value>
+            </block>
+          </statement>
+        </block>
+        <block type="studio_whenSpriteCollided" x="20" y="250">
           <title name="SPRITE1">0</title>
           <title name="SPRITE2">anything</title>
           <next>
@@ -71,7 +85,7 @@
             </block>
           </next>
         </block>
-        <block type="studio_whenSpriteCollided">
+        <block type="studio_whenSpriteCollided" x="20" y="350">
           <title name="SPRITE1">1</title>
           <title name="SPRITE2">anything</title>
           <next>
@@ -86,17 +100,6 @@
               </value>
             </block>
           </next>
-        </block>
-        <block type="studio_repeatForever">
-          <statement name="DO">
-            <block type="controls_if" inline="false">
-              <value name="IF0">
-                <block type="logic_compare" inline="true">
-                  <title name="OP">GT</title>
-                </block>
-              </value>
-            </block>
-          </statement>
         </block>
         <block type="procedures_defnoreturn" uservisible="false">
           <mutation>

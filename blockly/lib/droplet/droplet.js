@@ -8294,10 +8294,10 @@ if(i=this.variable instanceof Z){if(this.variable.isArray()||this.variable.isObj
 
       Editor.prototype.resizeBlockMode = function() {
         this.resizeTextMode();
-        this.resizeGutter();
         this.dropletElement.style.left = "" + this.paletteElement.offsetWidth + "px";
         this.dropletElement.style.height = "" + this.wrapperElement.offsetHeight + "px";
         this.dropletElement.style.width = "" + (this.wrapperElement.offsetWidth - this.paletteWrapper.offsetWidth) + "px";
+        this.resizeGutter();
         this.mainCanvas.height = this.dropletElement.offsetHeight;
         this.mainCanvas.width = this.dropletElement.offsetWidth - this.gutter.offsetWidth;
         this.mainCanvas.style.height = "" + this.mainCanvas.height + "px";
@@ -10476,7 +10476,7 @@ if(i=this.variable instanceof Z){if(this.variable.isArray()||this.variable.isObj
       this.aceEditor = ace.edit(this.aceElement);
       this.aceEditor.setTheme('ace/theme/chrome');
       this.aceEditor.setFontSize(15);
-      this.aceEditor.getSession().setMode('ace/mode/coffee');
+      this.aceEditor.getSession().setMode('ace/mode/' + this.options.mode);
       this.aceEditor.getSession().setTabSize(2);
       this.aceEditor.on('change', (function(_this) {
         return function() {

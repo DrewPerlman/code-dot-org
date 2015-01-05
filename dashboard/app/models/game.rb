@@ -22,6 +22,7 @@ class Game < ActiveRecord::Base
   FLAPPY = 'flappy'
   BOUNCE = 'bounce'
   PLAYLAB = STUDIO = 'studio'
+  APPLAB = WEBAPP = 'webapp'
 
   def self.custom_studio
     @@game_custom_studio ||= find_by_name("CustomStudio")
@@ -48,11 +49,11 @@ class Game < ActiveRecord::Base
   end
 
   def supports_sharing?
-    app == TURTLE || app == FLAPPY || app == BOUNCE || app == STUDIO
+    app == TURTLE || app == FLAPPY || app == BOUNCE || app == STUDIO || app == APPLAB
   end
 
   def share_mobile_fullscreen?
-    app == FLAPPY || app == BOUNCE || app == STUDIO
+    app == FLAPPY || app == BOUNCE || app == STUDIO || app == APPLAB
   end
 
   def flappy?
@@ -108,6 +109,7 @@ class Game < ActiveRecord::Base
         ArtistEC:turtle:artist_intro
         TextMatch
         StudioEC:studio
+        ContractMatch
       ).each_with_index do |game, id|
         name, app, intro_video = game.split ':'
         Game.create!(id: id + 1, name: name, app: app, intro_video: Video.find_by_key(intro_video))

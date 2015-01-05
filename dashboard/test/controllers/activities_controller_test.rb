@@ -4,6 +4,9 @@ require 'test_helper'
 class ActivitiesControllerTest < ActionController::TestCase
   include Devise::TestHelpers
   setup do
+    LevelSourceImage # make sure this is loaded before we mess around with mocking S3...
+    CDO.disable_s3_image_uploads = true # make sure image uploads are disabled unless specified in individual tests
+
     @user = create(:user, total_lines: 15)
     sign_in(@user)
 
@@ -49,7 +52,7 @@ class ActivitiesControllerTest < ActionController::TestCase
     @controller.expects :log_milestone
     @controller.expects :slog
 
-    @controller.expects(:trophy_check).with(@user)
+#    @controller.expects(:trophy_check).with(@user)
 
     assert_creates(LevelSource, Activity, UserLevel, UserScript) do
       assert_does_not_create(GalleryActivity) do
@@ -64,14 +67,14 @@ class ActivitiesControllerTest < ActionController::TestCase
     expected_response = {"previous_level"=>"/s/#{@script.id}/level/#{@script_level_prev.id}",
                          "total_lines"=>35,
                          "redirect"=>"/s/#{@script.id}/level/#{@script_level_next.id}",
-                         "level_source"=>"http://test.host/u/#{assigns(:level_source).id}",
-                         "save_to_gallery_url"=>"/gallery?gallery_activity%5Bactivity_id%5D=#{assigns(:activity).id}",
+                         "level_source"=>"http://test.host/c/#{assigns(:level_source).id}",
+#                         "save_to_gallery_url"=>"/gallery?gallery_activity%5Bactivity_id%5D=#{assigns(:activity).id}",
                          "design"=>"white_background"}
 
     assert_equal_expected_keys expected_response, JSON.parse(@response.body)
 
     # created a user script
-    user_script = assigns(:user_script)
+    user_script = UserScript.last
     assert_equal @script_level.script, user_script.script
     assert_equal @user, user_script.user
     assert user_script.started_at
@@ -88,7 +91,7 @@ class ActivitiesControllerTest < ActionController::TestCase
     @controller.expects :log_milestone
     @controller.expects :slog
 
-    @controller.expects(:trophy_check).with(@user)
+#    @controller.expects(:trophy_check).with(@user)
 
     UserScript.create(user: @user, script: @script_level.script)
     UserLevel.create(level: @script_level.level, user: @user)
@@ -110,7 +113,7 @@ class ActivitiesControllerTest < ActionController::TestCase
     @controller.expects :log_milestone
     @controller.expects :slog
 
-    @controller.expects(:trophy_check).with(@user)
+#    @controller.expects(:trophy_check).with(@user)
 
     UserScript.create(user: @user, script: @script_level.script)
     UserLevel.create(level: @script_level.level, user: @user, script: @script_level.script)
@@ -133,7 +136,7 @@ class ActivitiesControllerTest < ActionController::TestCase
     @controller.expects :log_milestone
     @controller.expects :slog
 
-    @controller.expects(:trophy_check).with(@user)
+#    @controller.expects(:trophy_check).with(@user)
 
     assert_creates(Activity, UserLevel, UserScript) do
       assert_does_not_create(GalleryActivity, LevelSource) do
@@ -149,13 +152,13 @@ class ActivitiesControllerTest < ActionController::TestCase
                          "total_lines"=>35,
                          "redirect"=>"/s/#{@script.id}/level/#{@script_level_next.id}",
                          "level_source"=>nil,
-                         "save_to_gallery_url"=>nil,
+#                         "save_to_gallery_url"=>nil,
                          "design"=>"white_background"}
 
     assert_equal_expected_keys expected_response, JSON.parse(@response.body)
 
     # created a user script
-    user_script = assigns(:user_script)
+    user_script = UserScript.last
     assert_equal @script_level.script, user_script.script
     assert_equal @user, user_script.user
     assert user_script.started_at
@@ -174,7 +177,7 @@ class ActivitiesControllerTest < ActionController::TestCase
 
     @controller.expects :slog
 
-    @controller.expects(:trophy_check).with(@user)
+#    @controller.expects(:trophy_check).with(@user)
 
     assert_creates(LevelSource, Activity, UserLevel, UserScript) do
       assert_does_not_create(GalleryActivity) do
@@ -190,8 +193,8 @@ class ActivitiesControllerTest < ActionController::TestCase
     expected_response = {"previous_level"=>"/s/#{@script.id}/level/#{@script_level_prev.id}",
                          "total_lines" => 15, # no change
                          "redirect"=>"/s/#{@script.id}/level/#{@script_level_next.id}",
-                         "level_source"=>"http://test.host/u/#{assigns(:level_source).id}",
-                         "save_to_gallery_url"=>"/gallery?gallery_activity%5Bactivity_id%5D=#{assigns(:activity).id}",
+                         "level_source"=>"http://test.host/c/#{assigns(:level_source).id}",
+#                         "save_to_gallery_url"=>"/gallery?gallery_activity%5Bactivity_id%5D=#{assigns(:activity).id}",
                          "design"=>"white_background"}
 
     assert_equal_expected_keys expected_response, JSON.parse(@response.body)
@@ -208,7 +211,7 @@ class ActivitiesControllerTest < ActionController::TestCase
 
     @controller.expects :slog
 
-    @controller.expects(:trophy_check).with(@user)
+#    @controller.expects(:trophy_check).with(@user)
 
     assert_creates(LevelSource, Activity, UserLevel, UserScript) do
       assert_does_not_create(GalleryActivity) do
@@ -224,8 +227,8 @@ class ActivitiesControllerTest < ActionController::TestCase
     expected_response = {"previous_level"=>"/s/#{@script.id}/level/#{@script_level_prev.id}",
                          "total_lines" => 1015, # pretended it was 1000
                          "redirect"=>"/s/#{@script.id}/level/#{@script_level_next.id}",
-                         "level_source"=>"http://test.host/u/#{assigns(:level_source).id}",
-                         "save_to_gallery_url"=>"/gallery?gallery_activity%5Bactivity_id%5D=#{assigns(:activity).id}",
+                         "level_source"=>"http://test.host/c/#{assigns(:level_source).id}",
+#                         "save_to_gallery_url"=>"/gallery?gallery_activity%5Bactivity_id%5D=#{assigns(:activity).id}",
                          "design"=>"white_background"}
 
     assert_equal_expected_keys expected_response, JSON.parse(@response.body)
@@ -244,7 +247,7 @@ class ActivitiesControllerTest < ActionController::TestCase
     @controller.expects :slog
 
     assert_creates(LevelSource) do
-      assert_does_not_create(Activity, UserLevel, LevelSourceImage, GalleryActivity) do
+      assert_does_not_create(Activity, UserLevel) do
           post :milestone, @milestone_params.merge(user_id: 0, lines: 9999999)
       end
     end
@@ -262,7 +265,7 @@ class ActivitiesControllerTest < ActionController::TestCase
     expected_response = {"previous_level"=>"/s/#{@script.id}/level/#{@script_level_prev.id}",
                          "total_lines" => 1000, # no change
                          "redirect"=>"/s/#{@script.id}/level/#{@script_level_next.id}",
-                         "level_source"=>"http://test.host/u/#{assigns(:level_source).id}",
+                         "level_source"=>"http://test.host/c/#{assigns(:level_source).id}",
                          "design"=>"white_background"}
 
     assert_equal_expected_keys expected_response, JSON.parse(@response.body)
@@ -281,7 +284,7 @@ class ActivitiesControllerTest < ActionController::TestCase
     @controller.expects :log_milestone
     @controller.expects :slog
 
-    @controller.expects(:trophy_check).with(@user)
+#    @controller.expects(:trophy_check).with(@user)
 
     # existing level
     script_start_date = Time.now - 5.days
@@ -304,14 +307,14 @@ class ActivitiesControllerTest < ActionController::TestCase
     expected_response = {"previous_level"=>"/s/#{@script.id}/level/#{@script_level_prev.id}",
                          "total_lines"=>35,
                          "redirect"=>"/s/#{@script.id}/level/#{@script_level_next.id}",
-                         "level_source"=>"http://test.host/u/#{assigns(:level_source).id}",
-                         "save_to_gallery_url"=>"/gallery?gallery_activity%5Bactivity_id%5D=#{assigns(:activity).id}",
+                         "level_source"=>"http://test.host/c/#{assigns(:level_source).id}",
+#                         "save_to_gallery_url"=>"/gallery?gallery_activity%5Bactivity_id%5D=#{assigns(:activity).id}",
                          "design"=>"white_background"}
 
     assert_equal_expected_keys expected_response, JSON.parse(@response.body)
 
     # created a user script that we started in the past with the other userlevel
-    user_script = assigns(:user_script)
+    user_script = UserScript.last
     assert_equal @script_level.script, user_script.script
     assert_equal @user, user_script.user
     assert_equal script_start_date.to_i, user_script.started_at.to_i
@@ -325,9 +328,11 @@ class ActivitiesControllerTest < ActionController::TestCase
     @controller.expects :log_milestone
     @controller.expects :slog
 
-    @controller.expects(:trophy_check).with(@user)
+#    @controller.expects(:trophy_check).with(@user)
 
-    assert_creates(LevelSource, Activity, UserLevel, GalleryActivity) do
+    expect_s3_upload
+
+    assert_creates(LevelSource, Activity, UserLevel, GalleryActivity, LevelSourceImage) do
       assert_difference('@user.reload.total_lines', 20) do # update total lines
         post :milestone, @milestone_params.merge(save_to_gallery: 'true', image: Base64.encode64(@good_image))
       end
@@ -338,7 +343,7 @@ class ActivitiesControllerTest < ActionController::TestCase
     expected_response = {"previous_level"=>"/s/#{@script.id}/level/#{@script_level_prev.id}",
                          "total_lines"=>35,
                          "redirect"=>"/s/#{@script.id}/level/#{@script_level_next.id}",
-                         "level_source"=>"http://test.host/u/#{assigns(:level_source).id}",
+                         "level_source"=>"http://test.host/c/#{assigns(:level_source).id}",
                          "save_to_gallery_url"=>"/gallery?gallery_activity%5Bactivity_id%5D=#{assigns(:activity).id}",
                          "design"=>"white_background"}
 
@@ -357,7 +362,7 @@ class ActivitiesControllerTest < ActionController::TestCase
     @controller.expects :log_milestone
     @controller.expects :slog
 
-    @controller.expects(:trophy_check).with(@user)
+#    @controller.expects(:trophy_check).with(@user)
 
     assert_creates(LevelSource, Activity, UserLevel) do
       assert_does_not_create(GalleryActivity) do
@@ -372,8 +377,8 @@ class ActivitiesControllerTest < ActionController::TestCase
     expected_response = {"previous_level"=>"/s/#{@script.id}/level/#{@script_level_prev.id}",
                          "total_lines"=>35,
                          "redirect"=>"/s/#{@script.id}/level/#{@script_level_next.id}",
-                         "level_source"=>"http://test.host/u/#{assigns(:level_source).id}",
-                         "save_to_gallery_url"=>"/gallery?gallery_activity%5Bactivity_id%5D=#{assigns(:activity).id}",
+                         "level_source"=>"http://test.host/c/#{assigns(:level_source).id}",
+#                         "save_to_gallery_url"=>"/gallery?gallery_activity%5Bactivity_id%5D=#{assigns(:activity).id}",
                          "design"=>"white_background"}
 
     assert_equal_expected_keys expected_response, JSON.parse(@response.body)
@@ -388,7 +393,7 @@ class ActivitiesControllerTest < ActionController::TestCase
     @controller.expects :log_milestone
     @controller.expects :slog
 
-    @controller.expects(:trophy_check).with(@user)
+#    @controller.expects(:trophy_check).with(@user)
 
     assert_creates(LevelSource, Activity, UserLevel) do
       assert_does_not_create(GalleryActivity) do
@@ -404,8 +409,8 @@ class ActivitiesControllerTest < ActionController::TestCase
     expected_response = {"previous_level"=>"/s/#{@script.id}/level/#{@script_level_prev.id}",
                          "total_lines"=>35,
                          "redirect"=>"/s/#{@script.id}/level/#{@script_level_next.id}",
-                         "level_source"=>"http://test.host/u/#{assigns(:level_source).id}",
-                         "save_to_gallery_url"=>"/gallery?gallery_activity%5Bactivity_id%5D=#{assigns(:activity).id}",
+                         "level_source"=>"http://test.host/c/#{assigns(:level_source).id}",
+#                         "save_to_gallery_url"=>"/gallery?gallery_activity%5Bactivity_id%5D=#{assigns(:activity).id}",
                          "design"=>"white_background"}
 
     assert_equal_expected_keys expected_response, JSON.parse(@response.body)
@@ -429,7 +434,7 @@ class ActivitiesControllerTest < ActionController::TestCase
 
     expected_response = {"previous_level"=>"/s/1/level/#{@script_level_prev.id}",
                          "message"=>"try again",
-                         "level_source"=>"http://test.host/u/#{assigns(:level_source).id}",
+                         "level_source"=>"http://test.host/c/#{assigns(:level_source).id}",
                          "design"=>"white_background"}
 
     assert_equal_expected_keys expected_response, JSON.parse(@response.body)
@@ -440,7 +445,7 @@ class ActivitiesControllerTest < ActionController::TestCase
     # do all the logging
     @controller.expects :log_milestone
 
-    assert_creates(LevelSource, Activity, UserLevel, LevelSourceImage) do
+    assert_creates(LevelSource, Activity, UserLevel) do
       assert_does_not_create(GalleryActivity) do
         assert_no_difference('@user.reload.total_lines') do # don't update total lines
             post :milestone, @milestone_params.merge(result: 'false', testResult: 10, image: Base64.encode64(@good_image), save_to_gallery: 'true')
@@ -448,13 +453,13 @@ class ActivitiesControllerTest < ActionController::TestCase
       end
     end
 
-    assert_equal @good_image.size, LevelSourceImage.last.image.size
+#    assert_equal @good_image.size, LevelSourceImage.last.image.size
 
     assert_response :success
 
     expected_response = {"previous_level"=>"/s/1/level/#{@script_level_prev.id}",
                          "message"=>"try again",
-                         "level_source"=>"http://test.host/u/#{assigns(:level_source).id}",
+                         "level_source"=>"http://test.host/c/#{assigns(:level_source).id}",
                          "design"=>"white_background"}
 
     assert_equal_expected_keys expected_response, JSON.parse(@response.body)
@@ -465,7 +470,9 @@ class ActivitiesControllerTest < ActionController::TestCase
     @controller.expects :log_milestone
     @controller.expects :slog
 
-    @controller.expects(:trophy_check)
+#    @controller.expects(:trophy_check)
+
+    expect_s3_upload
 
     assert_creates(LevelSource, Activity, UserLevel, LevelSourceImage) do
       assert_does_not_create(GalleryActivity) do
@@ -475,14 +482,14 @@ class ActivitiesControllerTest < ActionController::TestCase
       end
     end
 
-    assert_equal @good_image.size, LevelSourceImage.last.image.size
+    assert LevelSourceImage.last.s3?
 
     assert_response :success
 
     expected_response = {"previous_level"=>"/s/#{@script.id}/level/#{@script_level_prev.id}",
                          "total_lines"=>35,
                          "redirect"=>"/s/#{@script.id}/level/#{@script_level_next.id}",
-                         "level_source"=>"http://test.host/u/#{assigns(:level_source).id}",
+                         "level_source"=>"http://test.host/c/#{assigns(:level_source).id}",
                          "save_to_gallery_url"=>"/gallery?gallery_activity%5Bactivity_id%5D=#{assigns(:activity).id}",
                          "design"=>"white_background"}
 
@@ -494,7 +501,7 @@ class ActivitiesControllerTest < ActionController::TestCase
     @controller.expects :log_milestone
     @controller.expects :slog
 
-    @controller.expects(:trophy_check)
+#    @controller.expects(:trophy_check)
 
     program = "<whatever>"
 
@@ -504,8 +511,10 @@ class ActivitiesControllerTest < ActionController::TestCase
     end
     assert_equal @good_image.size, level_source_image.reload.image.size
 
+    expect_no_s3_upload
+
     assert_creates(Activity, UserLevel) do
-      assert_does_not_create(LevelSource, LevelSourceImage, GalleryActivity) do
+      assert_does_not_create(LevelSource) do
         assert_difference('@user.reload.total_lines', 20) do # update total lines
           post :milestone, @milestone_params.merge(program: program, image: Base64.encode64(@good_image))
         end
@@ -521,14 +530,14 @@ class ActivitiesControllerTest < ActionController::TestCase
     expected_response = {"previous_level"=>"/s/#{@script.id}/level/#{@script_level_prev.id}",
                          "total_lines"=>35,
                          "redirect"=>"/s/#{@script.id}/level/#{@script_level_next.id}",
-                         "level_source"=>"http://test.host/u/#{assigns(:level_source).id}",
+                         "level_source"=>"http://test.host/c/#{assigns(:level_source).id}",
                          "save_to_gallery_url"=>"/gallery?gallery_activity%5Bactivity_id%5D=#{assigns(:activity).id}",
                          "design"=>"white_background"}
 
     assert_equal_expected_keys expected_response, JSON.parse(@response.body)
   end
 
-  test "logged in milestone with existing level source and level source image updates image if old image was blank" do
+  test "logged in milestone with existing level source and level source image does not update image if old image was blank" do
     program = "<whatever>"
 
     level_source = LevelSource.find_identical_or_create(@script_level.level, program)
@@ -536,15 +545,15 @@ class ActivitiesControllerTest < ActionController::TestCase
       ls.image = @blank_image
     end
 
+    expect_no_s3_upload
+
     assert_creates(Activity, UserLevel) do
-      assert_does_not_create(LevelSource, LevelSourceImage, GalleryActivity) do
+      assert_does_not_create(LevelSource) do
         assert_difference('@user.reload.total_lines', 20) do # update total lines
           post :milestone, @milestone_params.merge(program: program, image: Base64.encode64(@good_image))
         end
       end
     end
-
-    assert_equal @good_image.size, level_source_image.reload.image.size
 
     assert_response :success
 
@@ -553,7 +562,7 @@ class ActivitiesControllerTest < ActionController::TestCase
     expected_response = {"previous_level"=>"/s/#{@script.id}/level/#{@script_level_prev.id}",
                          "total_lines"=>35,
                          "redirect"=>"/s/#{@script.id}/level/#{@script_level_next.id}",
-                         "level_source"=>"http://test.host/u/#{assigns(:level_source).id}",
+                         "level_source"=>"http://test.host/c/#{assigns(:level_source).id}",
                          "save_to_gallery_url"=>"/gallery?gallery_activity%5Bactivity_id%5D=#{assigns(:activity).id}",
                          "design"=>"white_background"}
 
@@ -568,8 +577,10 @@ class ActivitiesControllerTest < ActionController::TestCase
       ls.image = @good_image
     end
 
+    expect_no_s3_upload
+
     assert_creates(Activity, UserLevel) do
-      assert_does_not_create(LevelSource, LevelSourceImage, GalleryActivity) do
+      assert_does_not_create(LevelSource) do
         assert_difference('@user.reload.total_lines', 20) do # update total lines
           post :milestone, @milestone_params.merge(program: program, image: Base64.encode64(@blank_image))
         end
@@ -585,7 +596,7 @@ class ActivitiesControllerTest < ActionController::TestCase
     expected_response = {"previous_level"=>"/s/#{@script.id}/level/#{@script_level_prev.id}",
                          "total_lines"=>35,
                          "redirect"=>"/s/#{@script.id}/level/#{@script_level_next.id}",
-                         "level_source"=>"http://test.host/u/#{assigns(:level_source).id}",
+                         "level_source"=>"http://test.host/c/#{assigns(:level_source).id}",
                          "save_to_gallery_url"=>"/gallery?gallery_activity%5Bactivity_id%5D=#{assigns(:activity).id}",
                          "design"=>"white_background"}
 
@@ -600,8 +611,10 @@ class ActivitiesControllerTest < ActionController::TestCase
       ls.image = @good_image
     end
 
+    expect_no_s3_upload
+
     assert_creates(Activity, UserLevel) do
-      assert_does_not_create(LevelSource, LevelSourceImage, GalleryActivity) do
+      assert_does_not_create(LevelSource) do
         assert_difference('@user.reload.total_lines', 20) do # update total lines
           post :milestone, @milestone_params.merge(program: program, image: Base64.encode64(@another_good_image))
         end
@@ -617,7 +630,7 @@ class ActivitiesControllerTest < ActionController::TestCase
     expected_response = {"previous_level"=>"/s/#{@script.id}/level/#{@script_level_prev.id}",
                          "total_lines"=>35,
                          "redirect"=>"/s/#{@script.id}/level/#{@script_level_next.id}",
-                         "level_source"=>"http://test.host/u/#{assigns(:level_source).id}",
+                         "level_source"=>"http://test.host/c/#{assigns(:level_source).id}",
                          "save_to_gallery_url"=>"/gallery?gallery_activity%5Bactivity_id%5D=#{assigns(:activity).id}",
                          "design"=>"white_background"}
 
@@ -634,12 +647,13 @@ class ActivitiesControllerTest < ActionController::TestCase
     # do all the logging
     @controller.expects :log_milestone
     @controller.expects :slog
-    @controller.expects(:trophy_check).with(@user)
+#    @controller.expects(:trophy_check).with(@user)
 
     # some Mocha shenanigans to simulate throwing a duplicate entry
     # error and then succeeding by returning the existing userlevel
     user_level_finder = mock('user_level_finder')
     user_level_finder.stubs(:first).returns(nil)
+    user_level_finder.stubs(:update_all).with(attempts: 1, best_result: 100)
     UserLevel.stubs(:where).returns(user_level_finder)
 
     existing_user_level = UserLevel.create(user: @user, level: @script_level.level, script: @script_level.script)
@@ -647,6 +661,7 @@ class ActivitiesControllerTest < ActionController::TestCase
       raises(ActiveRecord::RecordNotUnique.new(Mysql2::Error.new("Duplicate entry '1208682-37' for key 'index_user_levels_on_user_id_and_level_id'"))).
       then.
       returns(existing_user_level)
+
 
     assert_creates(LevelSource, Activity) do
       assert_does_not_create(GalleryActivity, UserLevel) do
@@ -661,8 +676,8 @@ class ActivitiesControllerTest < ActionController::TestCase
     expected_response = {"previous_level"=>"/s/#{@script.id}/level/#{@script_level_prev.id}",
                          "total_lines"=>35,
                          "redirect"=>"/s/#{@script.id}/level/#{@script_level_next.id}",
-                         "level_source"=>"http://test.host/u/#{assigns(:level_source).id}",
-                         "save_to_gallery_url"=>"/gallery?gallery_activity%5Bactivity_id%5D=#{assigns(:activity).id}",
+                         "level_source"=>"http://test.host/c/#{assigns(:level_source).id}",
+#                         "save_to_gallery_url"=>"/gallery?gallery_activity%5Bactivity_id%5D=#{assigns(:activity).id}",
                          "design"=>"white_background"}
 
 
@@ -692,10 +707,10 @@ class ActivitiesControllerTest < ActionController::TestCase
     @controller.expects :log_milestone
     @controller.expects :slog
 
-    @controller.expects(:trophy_check).never # no trophy if not logged in
+#    @controller.expects(:trophy_check).never # no trophy if not logged in
 
     assert_creates(LevelSource) do
-      assert_does_not_create(Activity, UserLevel, LevelSourceImage, GalleryActivity) do
+      assert_does_not_create(Activity, UserLevel) do
         post :milestone, @milestone_params.merge(user_id: 0)
       end
     end
@@ -712,7 +727,7 @@ class ActivitiesControllerTest < ActionController::TestCase
     expected_response = {"previous_level"=>"/s/#{@script.id}/level/#{@script_level_prev.id}",
                          "total_lines"=>20,
                          "redirect"=>"/s/#{@script.id}/level/#{@script_level_next.id}",
-                         "level_source"=>"http://test.host/u/#{assigns(:level_source).id}",
+                         "level_source"=>"http://test.host/c/#{assigns(:level_source).id}",
                          "design"=>"white_background"}
 
     assert_equal_expected_keys expected_response, JSON.parse(@response.body)
@@ -729,10 +744,10 @@ class ActivitiesControllerTest < ActionController::TestCase
     @controller.expects :log_milestone
     @controller.expects :slog
 
-    @controller.expects(:trophy_check).never # no trophy if not logged in
+#    @controller.expects(:trophy_check).never # no trophy if not logged in
 
     assert_creates(LevelSource) do
-      assert_does_not_create(Activity, UserLevel, LevelSourceImage, GalleryActivity) do
+      assert_does_not_create(Activity, UserLevel) do
         post :milestone, @milestone_params.merge(user_id: 0)
       end
     end
@@ -749,7 +764,7 @@ class ActivitiesControllerTest < ActionController::TestCase
     expected_response = {"previous_level"=>"/s/#{@script.id}/level/#{@script_level_prev.id}",
                          "total_lines"=>30,
                          "redirect"=>"/s/#{@script.id}/level/#{@script_level_next.id}",
-                         "level_source"=>"http://test.host/u/#{assigns(:level_source).id}",
+                         "level_source"=>"http://test.host/c/#{assigns(:level_source).id}",
                          "design"=>"white_background"}
 
     assert_equal_expected_keys expected_response, JSON.parse(@response.body)
@@ -764,7 +779,7 @@ class ActivitiesControllerTest < ActionController::TestCase
     @controller.expects :log_milestone
 
     assert_creates(LevelSource) do
-      assert_does_not_create(Activity, UserLevel, LevelSourceImage, GalleryActivity) do
+      assert_does_not_create(Activity, UserLevel) do
         post :milestone, @milestone_params.merge(user_id: 0, result: "false", testResult: "0")
       end
     end
@@ -779,7 +794,7 @@ class ActivitiesControllerTest < ActionController::TestCase
     assert_response :success
     expected_response = {"previous_level"=>"/s/1/level/#{@script_level_prev.id}",
                          "message"=>"try again",
-                         "level_source"=>"http://test.host/u/#{assigns(:level_source).id}",
+                         "level_source"=>"http://test.host/c/#{assigns(:level_source).id}",
                          "design"=>"white_background"}
     assert_equal_expected_keys expected_response, JSON.parse(@response.body)
   end
@@ -795,7 +810,9 @@ class ActivitiesControllerTest < ActionController::TestCase
     @controller.expects :log_milestone
     @controller.expects :slog
 
-    @controller.expects(:trophy_check).never # no trophy if not logged in
+#    @controller.expects(:trophy_check).never # no trophy if not logged in
+
+    expect_s3_upload
 
     assert_creates(LevelSource, LevelSourceImage) do
       assert_does_not_create(Activity, UserLevel, GalleryActivity) do
@@ -815,11 +832,36 @@ class ActivitiesControllerTest < ActionController::TestCase
     expected_response = {"previous_level"=>"/s/#{@script.id}/level/#{@script_level_prev.id}",
                          "total_lines"=>30,
                          "redirect"=>"/s/#{@script.id}/level/#{@script_level_next.id}",
-                         "level_source"=>"http://test.host/u/#{assigns(:level_source).id}",
+                         "level_source"=>"http://test.host/c/#{assigns(:level_source).id}",
                          "design"=>"white_background"}
 
     assert_equal_expected_keys expected_response, JSON.parse(@response.body)
   end
+
+  test "does not save image when s3 upload fails" do
+    sign_out @user
+
+    # set up existing session
+    session['progress'] = {@script_level_prev.level_id => 50}
+    session['lines'] = 10
+
+    # do all the logging
+    @controller.expects :log_milestone
+    @controller.expects :slog
+
+#    @controller.expects(:trophy_check).never # no trophy if not logged in
+
+    expect_s3_upload_failure
+
+    assert_creates(LevelSource) do
+      assert_does_not_create(Activity, UserLevel, GalleryActivity, LevelSourceImage) do
+        post :milestone, @milestone_params.merge(user_id: 0, :save_to_gallery => 'true', image: Base64.encode64(@good_image))
+      end
+    end
+
+    assert_equal nil, assigns(:level_source_image)
+  end
+
 
   test 'sharing program with swear word returns error' do
     return unless CDO.webpurify_key

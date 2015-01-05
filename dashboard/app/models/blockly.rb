@@ -19,6 +19,7 @@ class Blockly < Level
     disable_variable_editing
     use_modal_function_editor
     use_contract_editor
+    default_num_example_blocks
     open_function_definition
     callout_json
   )
@@ -125,6 +126,6 @@ class Blockly < Level
   # for levels with solutions
   def update_ideal_level_source
     return if !self.respond_to?(:solution_blocks) || solution_blocks.blank?
-    self.ideal_level_source = LevelSource.find_identical_or_create(self, solution_blocks)
+    self.ideal_level_source_id = LevelSource.find_identical_or_create(self, solution_blocks).id
   end
 end

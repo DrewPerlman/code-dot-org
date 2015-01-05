@@ -178,7 +178,7 @@ if (process.env.MOOC_APP) {
       'options': {
         'include': [
           'debounce', 'reject', 'map', 'value', 'range', 'without', 'sample',
-          'create', 'flatten', 'isEmpty', 'wrap']
+          'create', 'flatten', 'isEmpty', 'wrap', 'size']
       }
     }
   };
