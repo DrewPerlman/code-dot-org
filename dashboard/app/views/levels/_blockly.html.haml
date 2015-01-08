@@ -6,6 +6,10 @@
 - level['showFinish'] = local[:embed]
 
 -if local[:embed]
+  :css
+    #blockly.readonly .userHidden {
+      display: none;
+    }
   #title
     %h4{style: 'margin-left: auto; margin-right: auto; max-width: 800px;'}!= level['instructions']
 #blocklyApp
